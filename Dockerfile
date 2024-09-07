@@ -15,9 +15,8 @@ RUN gradle clean build --no-daemon --info
 FROM openjdk:17-jdk-slim
 
 WORKDIR /app
+COPY build/libs/*.jar app.jar
 
-EXPOSE 8081
+EXPOSE 8080
 
-COPY --from=build /app/build/libs/admin-escola-0.0.1-SNAPSHOT.jar app.jar
-
-ENTRYPOINT ["java", "-jar", "app.jar"]
+ENTRYPOINT ["java", "-jar", "app.jar", "--spring.config.name=application-render"]
