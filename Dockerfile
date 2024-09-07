@@ -10,7 +10,7 @@ RUN gradle dependencies --no-daemon
 
 COPY src /app/src
 
-RUN gradle build --no-daemon
+RUN gradle clean build --no-daemon --info
 
 FROM openjdk:17-jdk-slim
 
