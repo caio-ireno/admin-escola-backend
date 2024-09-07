@@ -1,11 +1,16 @@
-FROM openjdk:17-jdk-slim AS build
-RUN apt-get update && apt-get install -y maven
+FROM gradle:7.6-jdk17 AS build
 
 WORKDIR /app
 
-COPY . .
+COPY build.gradle settings.gradle /app/
 
-RUN mvn clean package -DskipTests
+COPY gradle /app/gradle
+
+RUN gradle dependencies --no-daemon
+
+COPY src /app/src
+
+RUN gradle build --no-daemon
 
 FROM openjdk:17-jdk-slim
 
@@ -13,6 +18,6 @@ WORKDIR /app
 
 EXPOSE 8081
 
-COPY --from=build /app/target/admin-escola-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build /app/build/libs/admin-escola-0.0.1-SNAPSHOT.jar app.jar
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
